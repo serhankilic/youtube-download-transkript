@@ -12,6 +12,7 @@ struct ContentView: View {
     @State private var showTechnicalDetails = false
     @State private var showDeleteAudioConfirmation = false
     @State private var showCleanAudioConfirmation = false
+    @State private var didCopyTranscript = false
 
     init(viewModel: TranscriptionViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
@@ -475,11 +476,27 @@ struct ContentView: View {
 
     private func transcriptCard(mode: LayoutMode) -> some View {
         VStack(alignment: .leading, spacing: 14) {
-            cardHeader(
-                eyebrow: "İçerik",
-                title: "Transkript önizleme",
-                trailing: viewModel.isProcessing ? "İşlem devam ediyor" : nil
-            )
+            HStack(alignment: .top, spacing: 12) {
+                cardHeader(
+                    eyebrow: "İçerik",
+                    title: "Transkript önizleme",
+                    trailing: viewModel.isProcessing ? "İşlem devam ediyor" : nil
+                )
+
+                Button(didCopyTranscript ? "Kopyalandı" : "Tümünü Kopyala") {
+                    viewModel.copyTranscriptToClipboard()
+                    didCopyTranscript = true
+
+                    Task {
+                        try? await Task.sleep(for: .seconds(1.5))
+                        await MainActor.run {
+                            didCopyTranscript = false
+                        }
+                    }
+                }
+                .buttonStyle(DSButtonStyle(variant: .ghost))
+                .disabled(viewModel.transcript.isEmpty)
+            }
 
             ScrollView {
                 VStack(alignment: .leading, spacing: 10) {

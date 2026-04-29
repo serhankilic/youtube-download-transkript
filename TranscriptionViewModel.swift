@@ -92,6 +92,14 @@ final class TranscriptionViewModel: ObservableObject {
         youtubeURL = ""
     }
 
+    func copyTranscriptToClipboard() {
+        guard !transcript.isEmpty else { return }
+
+        NSPasteboard.general.clearContents()
+        NSPasteboard.general.setString(transcript, forType: .string)
+        appendLog("Transkript panoya kopyalandı.")
+    }
+
     func clearError() {
         errorTitle = nil
         errorMessage = nil

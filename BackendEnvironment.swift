@@ -3,6 +3,16 @@ import Foundation
 enum BackendEnvironment {
     static let appFolderName = "LocalTranscript"
     static let huggingFaceTokenEnvironmentKeys = ["HF_TOKEN", "HUGGING_FACE_HUB_TOKEN"]
+    static let defaultExecutableSearchPaths = [
+        "/opt/homebrew/bin",
+        "/usr/local/bin",
+        "/opt/homebrew/sbin",
+        "/usr/local/sbin",
+        "/usr/bin",
+        "/bin",
+        "/usr/sbin",
+        "/sbin",
+    ]
 
     static func runtimeRootURL(fileManager: FileManager = .default) throws -> URL {
         guard let baseURL = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask).first else {
@@ -61,6 +71,8 @@ enum BackendEnvironment {
         baseEnvironment: [String: String] = ProcessInfo.processInfo.environment
     ) -> [String: String] {
         var environment = baseEnvironment
+        environment["PATH"] = mergedExecutablePath(from: baseEnvironment["PATH"])
+
         guard let token = huggingFaceToken(fileManager: fileManager) else {
             return environment
         }
@@ -70,6 +82,14 @@ enum BackendEnvironment {
         }
 
         return environment
+    }
+
+    static func mergedExecutablePath(from currentPath: String?) -> String {
+        let existingEntries = (currentPath ?? "")
+            .split(separator: ":")
+            .map(String.init)
+        let mergedEntries = uniqueStrings(in: existingEntries + defaultExecutableSearchPaths)
+        return mergedEntries.joined(separator: ":")
     }
 
     static func prepareRuntimeBackend(fileManager: FileManager = .default) throws -> URL {
@@ -153,6 +173,17 @@ enum BackendEnvironment {
 
     private static func plainToken(at url: URL) -> String? {
         try? String(contentsOf: url, encoding: .utf8).trimmedToken
+    }
+
+    private static func uniqueStrings(in values: [String]) -> [String] {
+        var seen = Set<String>()
+        var ordered: [String] = []
+
+        for value in values where !value.isEmpty && seen.insert(value).inserted {
+            ordered.append(value)
+        }
+
+        return ordered
     }
 }
 

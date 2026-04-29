@@ -46,6 +46,19 @@ def emit_stdout_result(payload: dict[str, Any]) -> None:
     sys.stdout.flush()
 
 
+def format_duration(seconds: float | None) -> str:
+    if seconds is None:
+        return "?:??"
+
+    total_seconds = max(0, int(seconds))
+    minutes, remaining_seconds = divmod(total_seconds, 60)
+    hours, remaining_minutes = divmod(minutes, 60)
+
+    if hours > 0:
+        return f"{hours}:{remaining_minutes:02d}:{remaining_seconds:02d}"
+    return f"{remaining_minutes}:{remaining_seconds:02d}"
+
+
 def clean_token_value(value: str) -> str:
     return value.strip().strip("\"'")
 
@@ -324,23 +337,63 @@ def load_model(model_name: str):
             detail=str(exc) or exc.__class__.__name__,
         ) from exc
 
-    try:
-        return WhisperModel(model_name, compute_type="float32")
-    except Exception as exc:
-        raise map_model_error(exc, "loading_model") from exc
+    compute_types = ["int8", "float32"]
+    cpu_threads = max(1, os.cpu_count() or 1)
+    last_error: Exception | None = None
+
+    for compute_type in compute_types:
+        try:
+            return WhisperModel(
+                model_name,
+                compute_type=compute_type,
+                cpu_threads=cpu_threads,
+            )
+        except Exception as exc:
+            last_error = exc
+            detail = str(exc).lower()
+            if "compute type" not in detail and "unsupported" not in detail:
+                break
+
+    raise map_model_error(last_error or RuntimeError("Model yüklenemedi."), "loading_model")
 
 
 def transcribe_audio(model: Any, audio_path: Path, language: str | None) -> str:
     emit_status("transcribing", "Transkript oluşturuluyor...")
 
     try:
-        segments, _info = model.transcribe(str(audio_path), language=language)
+        segments, info = model.transcribe(
+            str(audio_path),
+            language=language,
+            vad_filter=True,
+        )
         transcript_lines: list[str] = []
+        total_duration = getattr(info, "duration", None)
+        processed_until = 0.0
+        last_reported_percent = -1
+        segment_count = 0
 
         for segment in segments:
+            segment_count += 1
             text = (segment.text or "").strip()
             if text:
                 transcript_lines.append(text)
+
+            segment_end = float(getattr(segment, "end", 0.0) or 0.0)
+            processed_until = max(processed_until, segment_end)
+
+            if total_duration and total_duration > 0:
+                percent = min(99, int((processed_until / total_duration) * 100))
+                if percent >= last_reported_percent + 5:
+                    last_reported_percent = percent
+                    emit_status(
+                        "transcribing",
+                        f"Transkript oluşturuluyor... %{percent} ({format_duration(processed_until)} / {format_duration(total_duration)})",
+                    )
+            elif segment_count % 25 == 0:
+                emit_status(
+                    "transcribing",
+                    f"Transkript oluşturuluyor... {segment_count} parça işlendi.",
+                )
 
         transcript = "\n".join(transcript_lines).strip()
         return transcript
