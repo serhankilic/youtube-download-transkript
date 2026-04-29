@@ -4,9 +4,10 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 APP_NAME="LocalTranscript"
-APP_BUNDLE="$ROOT_DIR/dist/$APP_NAME.app"
+DMG_NAME="Subly"
+APP_BUNDLE="$ROOT_DIR/dist/$DMG_NAME.app"
 STAGING_DIR="$ROOT_DIR/dist/dmg"
-DMG_PATH="$ROOT_DIR/dist/$APP_NAME.dmg"
+DMG_PATH="$ROOT_DIR/dist/$DMG_NAME.dmg"
 
 if [[ ! -d "$APP_BUNDLE" ]]; then
   "$ROOT_DIR/scripts/build-macos-app.sh"
@@ -14,12 +15,12 @@ fi
 
 rm -rf "$STAGING_DIR" "$DMG_PATH"
 mkdir -p "$STAGING_DIR"
-cp -R "$APP_BUNDLE" "$STAGING_DIR/$APP_NAME.app"
+cp -R "$APP_BUNDLE" "$STAGING_DIR/$DMG_NAME.app"
 ln -s /Applications "$STAGING_DIR/Applications"
 
 echo "Creating DMG..."
 hdiutil create \
-  -volname "$APP_NAME" \
+  -volname "$DMG_NAME" \
   -srcfolder "$STAGING_DIR" \
   -ov \
   -format UDZO \

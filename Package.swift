@@ -18,6 +18,7 @@ let package = Package(
             path: ".",
             exclude: [
                 "README.md",
+                "assets",
                 "design-system.html",
                 "dist",
                 "packaging",

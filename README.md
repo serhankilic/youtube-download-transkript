@@ -56,7 +56,7 @@ Uygulama token'ı şu kaynaklardan otomatik okur:
 
 Token'ı repoya koyma; `.env` ve `hf_token` git dışında bırakılır.
 
-## `.app` ve DMG olarak paketleme
+## `Subly.app` ve DMG olarak paketleme
 
 Bu repo hızlı dağıtım için gerçek bir macOS `.app` bundle ve isteğe bağlı DMG üretebilir. Bu paketleme yöntemi uygulamayı çift tıklanabilir hale getirir, ama hedef Mac'te aşağıdaki sistem araçları yine kurulu olmalıdır:
 
@@ -74,7 +74,7 @@ hf auth login
 Çıktı:
 
 ```text
-dist/LocalTranscript.app
+dist/Subly.app
 ```
 
 DMG üretmek için:
@@ -86,7 +86,7 @@ DMG üretmek için:
 Çıktı:
 
 ```text
-dist/LocalTranscript.dmg
+dist/Subly.dmg
 ```
 
 Dağıtım notları:
