@@ -195,8 +195,6 @@ struct ContentView: View {
     @ViewBuilder
     private func mainCards(includeStatus: Bool, includeLogs: Bool, mode: LayoutMode) -> some View {
         VStack(alignment: .leading, spacing: 16) {
-            heroCard(mode: mode)
-
             if includeStatus {
                 statusCard
             }
@@ -287,19 +285,6 @@ struct ContentView: View {
                     .pickerStyle(.segmented)
                     .disabled(viewModel.isProcessing)
                 }
-
-                Toggle(isOn: $viewModel.autoDeleteAudio) {
-                    VStack(alignment: .leading, spacing: 3) {
-                        Text("İşlem bitince ses dosyasını sil")
-                            .font(DS.Font.small.weight(.semibold))
-                            .foregroundStyle(DS.Color.fg1)
-                        Text("Yalnızca TXT dosyası saklanır.")
-                            .font(DS.Font.small)
-                            .foregroundStyle(DS.Color.fg3)
-                    }
-                }
-                .toggleStyle(.checkbox)
-                .disabled(viewModel.isProcessing)
             }
 
             if usesFlexibleSpacer {

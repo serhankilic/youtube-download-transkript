@@ -6,7 +6,7 @@ final class TranscriptionViewModel: ObservableObject {
     @Published var youtubeURL: String = ""
     @Published var selectedLanguage: LanguageOption
     @Published var selectedModel: ModelOption
-    @Published var autoDeleteAudio: Bool = false
+    @Published var autoDeleteAudio: Bool = true
     @Published var isProcessing: Bool = false
     @Published var currentStep: TranscriptionStep = .idle
     @Published var currentStepMessage: String = TranscriptionStep.idle.description
