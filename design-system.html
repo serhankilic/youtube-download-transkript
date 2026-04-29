@@ -1,0 +1,479 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8" />
+<title>YouTube Tranksriptör — Design System</title>
+<link rel="stylesheet" href="tokens.css" />
+<link rel="stylesheet" href="components.css" />
+<style>
+  body { padding: 56px 0; }
+  .page {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 0 56px;
+  }
+  .ds-hero {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    padding-bottom: 32px;
+    border-bottom: 0.5px solid var(--line-1);
+    margin-bottom: 56px;
+    gap: 32px;
+  }
+  .ds-hero__brand {
+    display: flex; align-items: center; gap: 14px;
+    margin-bottom: 18px;
+  }
+  .ds-hero__mark {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    background: radial-gradient(120% 120% at 30% 10%, oklch(0.78 0.18 250), oklch(0.55 0.18 260));
+    display: inline-flex; align-items: center; justify-content: center;
+    box-shadow:
+      0 1px 0 oklch(1 0 0 / 0.25) inset,
+      0 0 0 0.5px oklch(0.5 0.18 250 / 0.6),
+      0 8px 24px oklch(0.5 0.18 250 / 0.4);
+    color: white;
+  }
+  .ds-section {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 64px;
+    padding: 56px 0;
+    border-top: 0.5px solid var(--line-1);
+  }
+  .ds-section:first-of-type { border-top: 0; padding-top: 0; }
+  .ds-section__hd .eyebrow { margin-bottom: 8px; display: block; }
+  .ds-section__hd .h-3 { margin: 0 0 8px; }
+  .ds-section__hd p {
+    margin: 0;
+    color: var(--fg-3);
+    font-size: var(--text-sm);
+    line-height: var(--leading-body);
+    text-wrap: pretty;
+  }
+
+  /* Token swatches */
+  .swatch-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .swatch {
+    background: var(--bg-2);
+    border: 0.5px solid var(--line-1);
+    border-radius: var(--r-4);
+    padding: 14px;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .swatch__chip { height: 56px; border-radius: var(--r-3); border: 0.5px solid var(--line-1); }
+  .swatch__name { font-size: var(--text-xs); color: var(--fg-1); font-weight: 500; }
+  .swatch__var  { font-size: var(--text-2xs); color: var(--fg-3); font-family: var(--font-mono); }
+
+  /* Type specimen */
+  .type-row {
+    display: grid; grid-template-columns: 110px 1fr 80px;
+    gap: 24px; align-items: baseline;
+    padding: 16px 0;
+    border-bottom: 0.5px solid var(--line-1);
+  }
+  .type-row:last-child { border-bottom: 0; }
+  .type-row__name { color: var(--fg-3); font-size: var(--text-xs); font-family: var(--font-mono); }
+  .type-row__meta { color: var(--fg-3); font-size: var(--text-2xs); font-family: var(--font-mono); text-align: right; }
+
+  /* Spacing */
+  .spacing-row {
+    display: grid; grid-template-columns: 80px 1fr 80px;
+    gap: 16px; align-items: center;
+    padding: 8px 0;
+  }
+  .spacing-row__bar { height: 12px; background: var(--accent-soft); border-radius: 4px; border: 0.5px solid oklch(0.7 0.18 250 / 0.3); }
+  .spacing-row__name, .spacing-row__val {
+    font-family: var(--font-mono); font-size: var(--text-xs); color: var(--fg-2);
+  }
+  .spacing-row__val { color: var(--fg-3); }
+
+  /* Radius */
+  .radius-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 12px; }
+  .radius-cell {
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    text-align: center;
+  }
+  .radius-cell__box {
+    width: 64px; height: 64px;
+    background: var(--bg-3);
+    border: 0.5px solid var(--line-2);
+  }
+  .radius-cell__name { font-size: var(--text-2xs); color: var(--fg-2); font-family: var(--font-mono); }
+  .radius-cell__val  { font-size: var(--text-2xs); color: var(--fg-4); font-family: var(--font-mono); }
+
+  /* Component grid */
+  .demo {
+    background: var(--bg-2);
+    border: 0.5px solid var(--line-1);
+    border-radius: var(--r-5);
+    padding: 28px;
+    display: flex; flex-direction: column; gap: 20px;
+  }
+  .demo + .demo { margin-top: 16px; }
+  .demo__label {
+    font-size: var(--text-2xs);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide);
+    color: var(--fg-3);
+    font-weight: 600;
+  }
+
+  /* App preview frame */
+  .app-frame {
+    background: radial-gradient(ellipse at top, oklch(0.18 0.012 260), oklch(0.10 0.005 250) 70%);
+    padding: 56px;
+    border-radius: var(--r-6);
+    border: 0.5px solid var(--line-1);
+    margin-top: 16px;
+  }
+</style>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="frames/tweaks-panel.jsx"></script>
+<script type="text/babel" src="icons.jsx"></script>
+<script type="text/babel" src="app.jsx"></script>
+</head>
+<body>
+<div class="page">
+
+  <header class="ds-hero" data-screen-label="00 Hero">
+    <div>
+      <div class="ds-hero__brand">
+        <div class="ds-hero__mark">
+          <svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 6v4M5.5 4v8M8 2.5v11M10.5 5v6M13 7v2"/>
+          </svg>
+        </div>
+        <div>
+          <div class="eyebrow">Design System v1</div>
+          <div class="h-3" style="margin-top:2px;">YouTube Tranksriptör</div>
+        </div>
+      </div>
+      <h1 class="h-display" style="max-width:760px; margin:0;">Sade ama premium bir<br/>yerel transkript deneyimi.</h1>
+      <p class="muted" style="max-width:560px; margin-top:16px; font-size:var(--text-md); line-height:var(--leading-body);">
+        Linear/Vercel ruhuyla, koyu ve yüksek kontrastlı bir macOS arayüzü. Mavi vurgu, ince hairline çizgiler, geniş havalı tipografi.
+        Teknik olmayan kullanıcının "şu an ne oluyor, bitti mi, dosyalar nerede" sorularına anında cevap veriyor.
+      </p>
+    </div>
+    <div class="stack gap-2" style="align-items:flex-end;">
+      <span class="badge badge--accent"><span class="badge__dot"></span>Dark · Linear-style</span>
+      <span class="dim body-sm mono">tokens · components · app</span>
+    </div>
+  </header>
+
+  <!-- ── Foundations ───────────────────────────────────────────── -->
+  <section class="ds-section" data-screen-label="01 Colors">
+    <div class="ds-section__hd">
+      <span class="eyebrow">01 — Foundations</span>
+      <h2 class="h-3">Renk paleti</h2>
+      <p>OKLCH tabanlı, hafif soğuk siyah yüzeyler. Tek bir mavi accent (250°) tüm aksiyonu, fokus halkalarını ve ilerlemeyi taşıyor.</p>
+    </div>
+    <div>
+      <div class="demo">
+        <div class="demo__label">Yüzeyler</div>
+        <div class="swatch-grid">
+          <div class="swatch"><div class="swatch__chip" style="background:var(--bg-0)"></div><div class="swatch__name">Titlebar</div><div class="swatch__var">--bg-0</div></div>
+          <div class="swatch"><div class="swatch__chip" style="background:var(--bg-1)"></div><div class="swatch__name">Canvas</div><div class="swatch__var">--bg-1</div></div>
+          <div class="swatch"><div class="swatch__chip" style="background:var(--bg-2)"></div><div class="swatch__name">Card</div><div class="swatch__var">--bg-2</div></div>
+          <div class="swatch"><div class="swatch__chip" style="background:var(--bg-3)"></div><div class="swatch__name">Card hover</div><div class="swatch__var">--bg-3</div></div>
+          <div class="swatch"><div class="swatch__chip" style="background:var(--bg-4)"></div><div class="swatch__name">Control</div><div class="swatch__var">--bg-4</div></div>
+          <div class="swatch"><div class="swatch__chip" style="background:var(--bg-5)"></div><div class="swatch__name">Control hover</div><div class="swatch__var">--bg-5</div></div>
+          <div class="swatch"><div class="swatch__chip" style="background:var(--line-2)"></div><div class="swatch__name">Hairline</div><div class="swatch__var">--line-2</div></div>
+          <div class="swatch"><div class="swatch__chip" style="background:var(--line-3)"></div><div class="swatch__name">Border emph.</div><div class="swatch__var">--line-3</div></div>
+        </div>
+      </div>
+      <div class="demo">
+        <div class="demo__label">Accent & status</div>
+        <div class="swatch-grid">
+          <div class="swatch"><div class="swatch__chip" style="background:var(--accent)"></div><div class="swatch__name">Accent</div><div class="swatch__var">oklch(.7 .18 250)</div></div>
+          <div class="swatch"><div class="swatch__chip" style="background:var(--accent-soft); border-color:oklch(.7 .18 250 / .3);"></div><div class="swatch__name">Accent soft</div><div class="swatch__var">--accent-soft</div></div>
+          <div class="swatch"><div class="swatch__chip" style="background:var(--success)"></div><div class="swatch__name">Success</div><div class="swatch__var">oklch(.78 .16 152)</div></div>
+          <div class="swatch"><div class="swatch__chip" style="background:var(--warning)"></div><div class="swatch__name">Warning</div><div class="swatch__var">oklch(.82 .15 80)</div></div>
+          <div class="swatch"><div class="swatch__chip" style="background:var(--danger)"></div><div class="swatch__name">Danger</div><div class="swatch__var">oklch(.7 .21 22)</div></div>
+          <div class="swatch"><div class="swatch__chip" style="background:var(--info)"></div><div class="swatch__name">Info</div><div class="swatch__var">oklch(.78 .10 220)</div></div>
+          <div class="swatch"><div class="swatch__chip" style="background:var(--fg-1)"></div><div class="swatch__name">Text · default</div><div class="swatch__var">--fg-1</div></div>
+          <div class="swatch"><div class="swatch__chip" style="background:var(--fg-3)"></div><div class="swatch__name">Text · dim</div><div class="swatch__var">--fg-3</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="ds-section" data-screen-label="02 Type">
+    <div class="ds-section__hd">
+      <span class="eyebrow">01 — Foundations</span>
+      <h2 class="h-3">Tipografi</h2>
+      <p>SF Pro / Inter sistemi. Başlıklarda −0.02em tracking, gövdede pretty wrap. Mono için SF Mono — log ve süre göstergeleri.</p>
+    </div>
+    <div>
+      <div class="demo">
+        <div class="type-row"><span class="type-row__name">display</span><span class="h-display">Yerel transkript.</span><span class="type-row__meta">38 / 600</span></div>
+        <div class="type-row"><span class="type-row__name">h-1</span><span class="h-1">Bağlantı yapıştırın, başlayın</span><span class="type-row__meta">30 / 600</span></div>
+        <div class="type-row"><span class="type-row__name">h-2</span><span class="h-2">Transkriptiniz hazırlanıyor</span><span class="type-row__meta">24 / 600</span></div>
+        <div class="type-row"><span class="type-row__name">h-3</span><span class="h-3">Aşamalar</span><span class="type-row__meta">20 / 600</span></div>
+        <div class="type-row"><span class="type-row__name">h-4</span><span class="h-4">Ses indiriliyor</span><span class="type-row__meta">17 / 600</span></div>
+        <div class="type-row"><span class="type-row__name">body</span><span class="body">Tek bir YouTube linki yapıştırarak, internete ses dosyası göndermeden, kendi makinenizde transkript çıkarın.</span><span class="type-row__meta">13.5 / 400</span></div>
+        <div class="type-row"><span class="type-row__name">body-sm</span><span class="body-sm muted">Yalnızca TXT transkript dosyası saklanır.</span><span class="type-row__meta">12.5 / 400</span></div>
+        <div class="type-row"><span class="type-row__name">eyebrow</span><span class="eyebrow">Yerel transkript akışı</span><span class="type-row__meta">10.5 / 600</span></div>
+        <div class="type-row"><span class="type-row__name">mono</span><span class="mono dim">~/LocalTranscript/outputs/2026-04-29.txt</span><span class="type-row__meta">12.5 / 400</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="ds-section" data-screen-label="03 Spacing">
+    <div class="ds-section__hd">
+      <span class="eyebrow">01 — Foundations</span>
+      <h2 class="h-3">Spacing & radius</h2>
+      <p>4-base spacing skalası (s-1 → s-10). Yumuşak ama keskin kalan radii'ler — pencere 22, kart 12, buton 8.</p>
+    </div>
+    <div>
+      <div class="demo">
+        <div class="demo__label">Spacing</div>
+        <div>
+          <div class="spacing-row"><span class="spacing-row__name">--s-1</span><div class="spacing-row__bar" style="width:4px"></div><span class="spacing-row__val">4px</span></div>
+          <div class="spacing-row"><span class="spacing-row__name">--s-2</span><div class="spacing-row__bar" style="width:8px"></div><span class="spacing-row__val">8px</span></div>
+          <div class="spacing-row"><span class="spacing-row__name">--s-3</span><div class="spacing-row__bar" style="width:12px"></div><span class="spacing-row__val">12px</span></div>
+          <div class="spacing-row"><span class="spacing-row__name">--s-4</span><div class="spacing-row__bar" style="width:16px"></div><span class="spacing-row__val">16px</span></div>
+          <div class="spacing-row"><span class="spacing-row__name">--s-5</span><div class="spacing-row__bar" style="width:20px"></div><span class="spacing-row__val">20px</span></div>
+          <div class="spacing-row"><span class="spacing-row__name">--s-6</span><div class="spacing-row__bar" style="width:24px"></div><span class="spacing-row__val">24px</span></div>
+          <div class="spacing-row"><span class="spacing-row__name">--s-7</span><div class="spacing-row__bar" style="width:32px"></div><span class="spacing-row__val">32px</span></div>
+          <div class="spacing-row"><span class="spacing-row__name">--s-8</span><div class="spacing-row__bar" style="width:40px"></div><span class="spacing-row__val">40px</span></div>
+          <div class="spacing-row"><span class="spacing-row__name">--s-9</span><div class="spacing-row__bar" style="width:56px"></div><span class="spacing-row__val">56px</span></div>
+          <div class="spacing-row"><span class="spacing-row__name">--s-10</span><div class="spacing-row__bar" style="width:72px"></div><span class="spacing-row__val">72px</span></div>
+        </div>
+      </div>
+      <div class="demo">
+        <div class="demo__label">Radius</div>
+        <div class="radius-grid">
+          <div class="radius-cell"><div class="radius-cell__box" style="border-radius:var(--r-1)"></div><span class="radius-cell__name">r-1</span><span class="radius-cell__val">4</span></div>
+          <div class="radius-cell"><div class="radius-cell__box" style="border-radius:var(--r-2)"></div><span class="radius-cell__name">r-2</span><span class="radius-cell__val">6</span></div>
+          <div class="radius-cell"><div class="radius-cell__box" style="border-radius:var(--r-3)"></div><span class="radius-cell__name">r-3</span><span class="radius-cell__val">8</span></div>
+          <div class="radius-cell"><div class="radius-cell__box" style="border-radius:var(--r-4)"></div><span class="radius-cell__name">r-4</span><span class="radius-cell__val">10</span></div>
+          <div class="radius-cell"><div class="radius-cell__box" style="border-radius:var(--r-5)"></div><span class="radius-cell__name">r-5</span><span class="radius-cell__val">12</span></div>
+          <div class="radius-cell"><div class="radius-cell__box" style="border-radius:var(--r-6)"></div><span class="radius-cell__name">r-6</span><span class="radius-cell__val">16</span></div>
+          <div class="radius-cell"><div class="radius-cell__box" style="border-radius:var(--r-7)"></div><span class="radius-cell__name">r-7</span><span class="radius-cell__val">22</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Components ───────────────────────────────────────────── -->
+  <section class="ds-section" data-screen-label="04 Buttons">
+    <div class="ds-section__hd">
+      <span class="eyebrow">02 — Components</span>
+      <h2 class="h-3">Butonlar</h2>
+      <p>Üç varyant: primary, default, ghost. + danger ve sm/lg boyutlar. Hairline border + 1px üst aydınlatma.</p>
+    </div>
+    <div>
+      <div class="demo">
+        <div class="demo__label">Varyantlar</div>
+        <div class="row gap-3" style="flex-wrap:wrap;">
+          <button class="btn btn--primary">Transkript Oluştur</button>
+          <button class="btn">Backend Kurulumu Yap</button>
+          <button class="btn btn--ghost">Sıfırla</button>
+          <button class="btn btn--danger">Ses dosyasını sil</button>
+          <button class="btn" disabled>Devre dışı</button>
+        </div>
+        <div class="row gap-3" style="flex-wrap:wrap;">
+          <button class="btn btn--primary btn--lg">Transkript Oluştur</button>
+          <button class="btn btn--lg">Backend Kurulumu</button>
+          <button class="btn btn--sm">Kopyala</button>
+          <button class="btn btn--ghost btn--sm">İndir TXT</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="ds-section" data-screen-label="05 Forms">
+    <div class="ds-section__hd">
+      <span class="eyebrow">02 — Components</span>
+      <h2 class="h-3">Form input'ları</h2>
+      <p>URL input, segmented control'ler (dil + model), checkbox. Fokus halkası 3px accent ring.</p>
+    </div>
+    <div>
+      <div class="demo" style="max-width:520px;">
+        <div class="field">
+          <label class="field__label"><span>YouTube linki</span></label>
+          <div class="input-wrap">
+            <span class="input-wrap__prefix">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 9.5l3-3"/><path d="M9 4.5l1-1a2.83 2.83 0 014 4l-2 2"/><path d="M7 11.5l-1 1a2.83 2.83 0 01-4-4l2-2"/></svg>
+            </span>
+            <input class="input input--lg input--with-prefix" placeholder="https://youtube.com/watch?v=…" />
+          </div>
+        </div>
+        <div class="field">
+          <label class="field__label"><span>Dil</span></label>
+          <div class="seg">
+            <button class="seg__opt" aria-pressed="true">Otomatik</button>
+            <button class="seg__opt">Türkçe</button>
+            <button class="seg__opt">Arapça</button>
+          </div>
+        </div>
+        <div class="field">
+          <label class="field__label"><span>Model</span><span class="dim" style="font-size:var(--text-2xs)">≈ 1 dk</span></label>
+          <div class="seg">
+            <button class="seg__opt">Hızlı</button>
+            <button class="seg__opt" aria-pressed="true">Dengeli</button>
+            <button class="seg__opt">Kaliteli</button>
+          </div>
+        </div>
+        <label class="check">
+          <input type="checkbox" checked />
+          <span class="check__box"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5.2L4 7.2 8 3"/></svg></span>
+          <span>
+            <span class="check__label">İşlem bitince ses dosyasını sil</span>
+            <span class="check__sub">Yalnızca TXT transkript dosyası saklanır.</span>
+          </span>
+        </label>
+      </div>
+    </div>
+  </section>
+
+  <section class="ds-section" data-screen-label="06 Status">
+    <div class="ds-section__hd">
+      <span class="eyebrow">02 — Components</span>
+      <h2 class="h-3">Durum & ilerleme</h2>
+      <p>Status card (yüzde + ETA), badges, progress bar, vertical stage list ve hata kutusu. Aktif aşama nabız ve glow ile öne çıkıyor.</p>
+    </div>
+    <div>
+      <div class="demo">
+        <div class="demo__label">Badges</div>
+        <div class="row gap-2" style="flex-wrap:wrap;">
+          <span class="badge"><span class="badge__dot" style="color:var(--fg-3)"></span>Hazır</span>
+          <span class="badge badge--accent"><span class="badge__dot"></span>Çalışıyor</span>
+          <span class="badge badge--success"><span class="badge__dot"></span>Tamamlandı</span>
+          <span class="badge badge--warning"><span class="badge__dot"></span>Düşük güven</span>
+          <span class="badge badge--danger"><span class="badge__dot"></span>Hata</span>
+        </div>
+      </div>
+      <div class="demo">
+        <div class="demo__label">Progress</div>
+        <div class="progress"><div class="progress__fill" style="width:62%"></div></div>
+        <div class="progress progress--indeterminate"><div class="progress__fill"></div></div>
+      </div>
+      <div class="demo">
+        <div class="demo__label">Stage list — örnek (3 / 6 aktif)</div>
+        <div id="ds-stage-mount"></div>
+      </div>
+      <div class="demo">
+        <div class="demo__label">Error box</div>
+        <div id="ds-error-mount"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="ds-section" data-screen-label="07 Content">
+    <div class="ds-section__hd">
+      <span class="eyebrow">02 — Components</span>
+      <h2 class="h-3">İçerik bölgeleri</h2>
+      <p>Transkript skeleton → dolu metin geçişi, log viewer ve dosya aksiyon karoları.</p>
+    </div>
+    <div>
+      <div class="demo">
+        <div class="demo__label">Transkript — boş (skeleton)</div>
+        <div id="ds-skel-mount"></div>
+      </div>
+      <div class="demo">
+        <div class="demo__label">Transkript — dolu</div>
+        <div id="ds-tx-mount"></div>
+      </div>
+      <div class="demo">
+        <div class="demo__label">Log viewer</div>
+        <div id="ds-log-mount"></div>
+      </div>
+      <div class="demo">
+        <div class="demo__label">Dosya aksiyonları</div>
+        <div id="ds-files-mount"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Full app ─────────────────────────────────────────────── -->
+  <section class="ds-section" data-screen-label="08 App">
+    <div class="ds-section__hd">
+      <span class="eyebrow">03 — Application</span>
+      <h2 class="h-3">Uygulama, dört durumda</h2>
+      <p>macOS pencere chrome'unun içinde bütün sistem bir araya geliyor. Idle → Running → Done; ayrıca Error.</p>
+    </div>
+    <div></div>
+  </section>
+
+  <div class="page" style="padding:0;">
+    <div class="stack gap-7" data-screen-label="09 App states">
+      <div>
+        <div class="row gap-2" style="margin-bottom:14px;">
+          <span class="badge badge--accent"><span class="badge__dot"></span>Running — ana durum</span>
+          <span class="dim body-sm">Tek pencere, sol kontrol rayı, ana akış, sağ aşama/log paneli.</span>
+        </div>
+        <div class="app-frame"><div id="app-running"></div></div>
+      </div>
+      <div>
+        <div class="row gap-2" style="margin-bottom:14px;">
+          <span class="badge badge--success"><span class="badge__dot"></span>Done — transkript hazır</span>
+        </div>
+        <div class="app-frame"><div id="app-done"></div></div>
+      </div>
+      <div>
+        <div class="row gap-2" style="margin-bottom:14px;">
+          <span class="badge badge--danger"><span class="badge__dot"></span>Error — kullanıcı dostu hata</span>
+        </div>
+        <div class="app-frame"><div id="app-error"></div></div>
+      </div>
+      <div>
+        <div class="row gap-2" style="margin-bottom:14px;">
+          <span class="badge"><span class="badge__dot" style="color:var(--fg-3)"></span>Idle — başlamadan önce</span>
+        </div>
+        <div class="app-frame"><div id="app-idle"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <footer style="margin-top:80px; padding:32px 0; border-top:0.5px solid var(--line-1); display:flex; justify-content:space-between; align-items:center;">
+    <span class="dim body-sm">YouTube Tranksriptör · Design System v1 · 2026</span>
+    <span class="dim body-sm mono">tokens.css · components.css · app.jsx</span>
+  </footer>
+
+</div>
+
+<script type="text/babel">
+const { useState } = React;
+
+// Mount mini-demos
+function StagesDemo() { return <Stages activeIdx={3} />; }
+function ErrorDemo()  { return <ErrorBox onRetry={() => {}} />; }
+function SkelDemo()   { return <div className="card"><div className="card__bd"><TranscriptSkeleton /></div></div>; }
+function TxDemo()     { return <div className="card"><div className="card__bd"><Transcript data={SAMPLE_TRANSCRIPT} /></div></div>; }
+function LogDemo()    { return <Logs rows={SAMPLE_LOGS} />; }
+function FilesDemo()  {
+  return <FileBar files={{
+    txt:     "~/LocalTranscript/outputs/2026-04-29.txt",
+    audio:   "~/Downloads/audio_dQw4w9WgXcQ.m4a",
+    outputs: "~/LocalTranscript/outputs/",
+  }} />;
+}
+
+ReactDOM.createRoot(document.getElementById('ds-stage-mount')).render(<StagesDemo />);
+ReactDOM.createRoot(document.getElementById('ds-error-mount')).render(<ErrorDemo />);
+ReactDOM.createRoot(document.getElementById('ds-skel-mount')).render(<SkelDemo />);
+ReactDOM.createRoot(document.getElementById('ds-tx-mount')).render(<TxDemo />);
+ReactDOM.createRoot(document.getElementById('ds-log-mount')).render(<LogDemo />);
+ReactDOM.createRoot(document.getElementById('ds-files-mount')).render(<FilesDemo />);
+
+// Mount app variants inside a Mac window each
+function AppWin({ scenario, title }) {
+  return (
+    <MacWin title={title} height={720}>
+      <LocalTranscriptApp scenario={scenario} />
+    </MacWin>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('app-running')).render(<AppWin scenario="running" title="YouTube Tranksriptör" />);
+ReactDOM.createRoot(document.getElementById('app-done')).render(<AppWin scenario="done" title="YouTube Tranksriptör" />);
+ReactDOM.createRoot(document.getElementById('app-error')).render(<AppWin scenario="error" title="YouTube Tranksriptör" />);
+ReactDOM.createRoot(document.getElementById('app-idle')).render(<AppWin scenario="idle" title="YouTube Tranksriptör" />);
+</script>
+
+</body>
+</html>
