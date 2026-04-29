@@ -55,3 +55,42 @@ Uygulama token'ı şu kaynaklardan otomatik okur:
 - Hugging Face CLI'ın standart token dosyaları: `~/.cache/huggingface/token` veya `~/.huggingface/token`
 
 Token'ı repoya koyma; `.env` ve `hf_token` git dışında bırakılır.
+
+## `.app` ve DMG olarak paketleme
+
+Bu repo hızlı dağıtım için gerçek bir macOS `.app` bundle ve isteğe bağlı DMG üretebilir. Bu paketleme yöntemi uygulamayı çift tıklanabilir hale getirir, ama hedef Mac'te aşağıdaki sistem araçları yine kurulu olmalıdır:
+
+```bash
+brew install python@3.14 ffmpeg hf
+hf auth login
+```
+
+`.app` üretmek için:
+
+```bash
+./scripts/build-macos-app.sh
+```
+
+Çıktı:
+
+```text
+dist/LocalTranscript.app
+```
+
+DMG üretmek için:
+
+```bash
+./scripts/build-dmg.sh
+```
+
+Çıktı:
+
+```text
+dist/LocalTranscript.dmg
+```
+
+Dağıtım notları:
+
+- Hedef kullanıcı `.app` dosyasını `Applications` klasörüne sürükleyip açabilir.
+- Uygulama ilk kullanımda yine kendi backend sanal ortamını kurar.
+- Bu hızlı paketleme akışı notarization içermez; başka bir Mac'te ilk açılışta Gatekeeper uyarısı görülebilir. Gerekirse uygulamayı sağ tıklayıp `Open` ile başlatmak gerekir.

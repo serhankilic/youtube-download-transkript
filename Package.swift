@@ -18,7 +18,10 @@ let package = Package(
             path: ".",
             exclude: [
                 "README.md",
-                "design-system.html"
+                "design-system.html",
+                "dist",
+                "packaging",
+                "scripts"
             ],
             sources: [
                 "LocalTranscriptApp.swift",
