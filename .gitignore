@@ -1,0 +1,7 @@
+.DS_Store
+.build/
+.swiftpm/
+Backend/__pycache__/
+outputs/
+.env
+hf_token
