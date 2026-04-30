@@ -65,6 +65,12 @@ brew install python@3.14 ffmpeg hf
 hf auth login
 ```
 
+Kaynak kodu indiren kişinin bilmesi gereken kritik nokta:
+
+- GitHub'daki `Code > Download ZIP` sadece kaynak kodu indirir.
+- `Subly.app` ve `Subly.dmg` kaynak dosya olarak repoda tutulmaz; build sırasında `dist/` içine üretilir.
+- Son kullanıcıya verilecek tıklanabilir paket için GitHub `Releases` altındaki artifact veya release asset indirilmelidir.
+
 `.app` üretmek için:
 
 ```bash
@@ -94,3 +100,4 @@ Dağıtım notları:
 - Hedef kullanıcı `.app` dosyasını `Applications` klasörüne sürükleyip açabilir.
 - Uygulama ilk kullanımda yine kendi backend sanal ortamını kurar.
 - Bu hızlı paketleme akışı notarization içermez; başka bir Mac'te ilk açılışta Gatekeeper uyarısı görülebilir. Gerekirse uygulamayı sağ tıklayıp `Open` ile başlatmak gerekir.
+- Repo artık `.github/workflows/macos-release.yml` ile manuel veya tag üzerinden macOS build artifact üretmek için hazırdır.
